@@ -1,1 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Val Universe | An Infinite Chronicle of Sweet Things</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        valPink: '#ffb3c6',
+                        valRose: '#fb7185',
+                        valPlum: '#4c1d95',
+                        valViolet: '#7c3aed',
+                        valGold: '#fbbf24',
+                        valSky: '#38bdf8',
+                        valCream: '#fdfbf7',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                        script: ['"Dancing Script"', 'cursive']
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-14px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                            '50%': { opacity: '0.8', transform: 'scale(1.04)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0a1c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #f472b6, #c084fc, #e879f9);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(26, 17, 43, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+        .glass-card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(244, 114, 182, 0.45);
+            box-shadow: 0 25px 60px rgba(244, 114, 182, 0.25);
+        }
+
+        .gold-shimmer {
+            background: linear-gradient(135deg, #fff 0%, #fde047 30%, #f472b6 70%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .rose-shimmer {
+            background: linear-gradient(135deg, #fce7f3 0%, #f472b6 40%, #c084fc 80%, #fed7aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Reading Progress bar */
+        #readingProgress {
+            transform-origin: 0%;
+        }
+
+        /* Canvas absolute background */
+        #starCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Wax seal stamp vibe */
+        .wax-seal {
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.5), inset 0 2px 4px rgba(255,255,255,0.4);
+        }
+    </style>
+</head>
+<body class="bg-[#090514] text-[#f1edf7] font-sans antialiased selection:bg-pink-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Background Cosmic Particles Canvas -->
+    <canvas id="starCanvas"></canvas>
+
+    <!-- Reading Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1.5 bg-black/40 z-50">
+        <div id="readingProgress" class="h-full bg-gradient-to-r from-pink-500 via-purple-400 to-amber-300 w-0 transition-all duration-150"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-[#0e0720]/80 backdrop-blur-md border-b border-white/10 px-4 md:px-8 py-3.5 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#hero" class="flex items-center gap-2.5 group">
+                <span class="w-9 h-9 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/30 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-heart animate-pulse text-sm"></i>
+                </span>
+                <span class="font-cinzel text-lg md:text-xl font-bold tracking-wider gold-shimmer">VAL UNIVERSE</span>
+            </a>
+
+            <!-- Quick Jumps -->
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-pink-200/80">
+                <a href="#epic" class="hover:text-pink-300 transition-colors">The Great Epic</a>
+                <a href="#vault" class="hover:text-pink-300 transition-colors">Envelope Vault</a>
+                <a href="#dispenser" class="hover:text-pink-300 transition-colors">Compliments</a>
+                <a href="#hug-station" class="hover:text-pink-300 transition-colors">Infinite Hugs</a>
+                <a href="#doodle-pad" class="hover:text-pink-300 transition-colors">Val's Canvas</a>
+                <a href="#quest-log" class="hover:text-pink-300 transition-colors">Checklist</a>
+                <a href="#archive" class="hover:text-pink-300 transition-colors">Archive</a>
+            </nav>
+
+            <!-- Soundscape Controls & Mobile Menu Toggle -->
+            <div class="flex items-center gap-3">
+                <div class="relative group">
+                    <button id="soundToggleBtn" onclick="toggleAudio()" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-pink-500/20 border border-white/20 hover:border-pink-400/50 flex items-center gap-2 transition-all">
+                        <i id="soundIcon" class="fa-solid fa-volume-xmark text-pink-400"></i>
+                        <span id="soundLabel" class="hidden sm:inline">Play Ambient Sound</span>
+                    </button>
+                    <!-- Ambient Sound Sub-menu -->
+                    <div class="absolute right-0 top-12 w-56 p-3 rounded-2xl glass-card hidden group-hover:block transition-all shadow-2xl border border-white/15">
+                        <p class="text-xs font-bold text-pink-300 mb-2">Ambient Atmosphere</p>
+                        <div class="space-y-1.5 text-xs text-purple-200">
+                            <button onclick="setSoundPreset('chimes')" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-white/10 flex items-center justify-between">
+                                <span>✨ Starlight Chimes</span>
+                                <i class="fa-solid fa-sparkles text-[10px] text-amber-300"></i>
+                            </button>
+                            <button onclick="setSoundPreset('rain')" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-white/10 flex items-center justify-between">
+                                <span>🌧️ Cozy Night Rain</span>
+                                <i class="fa-solid fa-cloud-rain text-[10px] text-blue-300"></i>
+                            </button>
+                            <button onclick="setSoundPreset('fire')" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-white/10 flex items-center justify-between">
+                                <span>🔥 Warm Embers</span>
+                                <i class="fa-solid fa-fire text-[10px] text-orange-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#hug-station" class="hidden sm:inline-flex px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-lg shadow-pink-500/30 hover:brightness-110 active:scale-95 transition-all">
+                    Send Hug
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-4 md:px-6 z-10">
+        <div class="max-w-4xl mx-auto text-center relative">
+            <!-- Decorative Glow Rings -->
+            <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-pink-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-glow"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Top Pill -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-pink-400/30 text-pink-300 text-xs md:text-sm font-medium mb-8 animate-float-slow">
+                <i class="fa-solid fa-star text-amber-300"></i>
+                <span>A Living Monument of Appreciation For Val</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping"></span>
+            </div>
+
+            <!-- Grand Title -->
+            <h1 class="font-cinzel text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.08] mb-6">
+                <span class="block text-white drop-shadow-md">FOR VAL:</span>
+                <span class="gold-shimmer block text-3xl sm:text-5xl md:text-6xl mt-2 font-serif italic tracking-normal">
+                    The Warmest Soul In The Entire Universe
+                </span>
+            </h1>
+
+            <!-- Typing Effect Subtitle -->
+            <div class="min-h-[4rem] flex items-center justify-center mb-8">
+                <p id="typewriterText" class="text-lg md:text-2xl text-purple-200/90 font-light italic max-w-2xl px-2">
+                    <!-- Dynamic text inserted here -->
+                </p>
+            </div>
+
+            <!-- Quick Stat Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto mb-12">
+                <div class="glass-card p-4 rounded-2xl border-white/10 text-center">
+                    <span class="block text-2xl md:text-3xl font-extrabold text-pink-400 font-cinzel">∞</span >
+                    <span class="text-xs uppercase tracking-wider text-purple-200/70">Kindness Level</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl border-white/10 text-center">
+                    <span class="block text-2xl md:text-3xl font-extrabold text-amber-300 font-cinzel">100%</span>
+                    <span class="text-xs uppercase tracking-wider text-purple-200/70">Safe Haven Vibe</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl border-white/10 text-center">
+                    <span class="block text-2xl md:text-3xl font-extrabold text-rose-400 font-cinzel">#1</span>
+                    <span class="text-xs uppercase tracking-wider text-purple-200/70">Certified Favorite</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl border-white/10 text-center">
+                    <span class="block text-2xl md:text-3xl font-extrabold text-purple-300 font-cinzel">Eternal</span>
+                    <span class="text-xs uppercase tracking-wider text-purple-200/70">Cherished Always</span>
+                </div>
+            </div>
+
+            <!-- CTAs -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="#epic" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white font-semibold text-sm md:text-base shadow-xl shadow-pink-500/25 hover:shadow-pink-500/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span>Read The Great Epic of Val</span>
+                </a>
+                <a href="#vault" class="px-8 py-3.5 rounded-full glass-card hover:bg-white/10 border-white/20 text-pink-200 font-semibold text-sm md:text-base hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5">
+                    <i class="fa-solid fa-envelope-open-text text-pink-400"></i>
+                    <span>Open Secret Letters</span>
+                </a>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="mt-16 animate-bounce text-pink-300/60">
+                <a href="#epic"><i class="fa-solid fa-chevron-down text-xl"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: THE GREAT EPIC OF VAL -->
+    <section id="epic" class="py-24 px-4 md:px-8 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Monumental Chronicle</span>
+                <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">The Great Epic of Val</h2>
+                <p class="text-purple-200/80 max-w-2xl mx-auto text-sm md:text-base font-serif italic">
+                    "Take your time, breathe slowly, and settle in. These sprawling words were written because ordinary sentences could never hope to hold how much you mean to the universe."
+                </p>
+                <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-pink-300">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Estimated Reading Time: Full-Length Heartwarming Novelty</span>
+                </div>
+            </div>
+
+            <!-- Chapter Navigation Tabs -->
+            <div class="flex items-center justify-center flex-wrap gap-2 mb-12">
+                <button onclick="switchChapter(1)" id="chTab1" class="px-4 py-2 rounded-full text-xs font-semibold glass-card border-pink-400/50 text-pink-300 transition-all">I. The Dawn of Val</button>
+                <button onclick="switchChapter(2)" id="chTab2" class="px-4 py-2 rounded-full text-xs font-semibold glass-card border-white/10 text-purple-300 hover:text-white transition-all">II. The Eiffel Tower Monologue</button>
+                <button onclick="switchChapter(3)" id="chTab3" class="px-4 py-2 rounded-full text-xs font-semibold glass-card border-white/10 text-purple-300 hover:text-white transition-all">III. The Architecture of Your Laugh</button>
+                <button onclick="switchChapter(4)" id="chTab4" class="px-4 py-2 rounded-full text-xs font-semibold glass-card border-white/10 text-purple-300 hover:text-white transition-all">IV. The Eternal Friendship Vow</button>
+                <button onclick="switchChapter(5)" id="chTab5" class="px-4 py-2 rounded-full text-xs font-semibold glass-card border-white/10 text-purple-300 hover:text-white transition-all">V. 50 Universal Truths</button>
+            </div>
+
+            <!-- CHAPTER 1 -->
+            <article id="chapter1" class="glass-card rounded-3xl p-6 sm:p-10 md:p-14 border border-white/15 leading-relaxed relative overflow-hidden transition-all duration-500">
+                <div class="absolute top-0 right-0 p-8 text-8xl font-cinzel text-white/[0.03] select-none pointer-events-none">01</div>
+                <div class="max-w-3xl mx-auto space-y-6 text-base sm:text-lg text-purple-100/90 font-light">
+                    <div class="border-b border-white/10 pb-4 mb-6">
+                        <span class="text-xs font-bold text-pink-400 tracking-widest uppercase">Chapter I</span>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mt-1">The Dawn of Knowing You: An Astronomical Miracle</h3>
+                    </div>
+
+                    <p class="first-letter:font-cinzel first-letter:text-6xl first-letter:font-bold first-letter:text-pink-400 first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+                        There are eight billion people traversing the crust of this tiny, spinning blue sphere, each wrapped in their own storms, chasing their own sunrise, hurried by calendars and clocks. And yet, somehow, against every astronomical odds calculation, across all the silent stretches of history and cosmic chance, the trajectory of my universe intersected with yours. That single occurrence is, without exaggeration, the kindest twist of fate I have ever experienced.
+                    </p>
+
+                    <p>
+                        Val, from the moment you exist in someone’s sphere, the atmosphere changes. It is not something loud or disruptive; it is not a fireworks blast that leaves only smoke behind. Rather, your presence is like the first genuine warmth of early April breaking through the grey frost of a brutal winter. It is the deep, chest-filling breath you take when you finally kick off your shoes after an impossibly arduous journey. You bring a quiet, steady safety into rooms that people did not even know was missing until you arrived.
+                    </p>
+
+                    <p>
+                        I have spent hours thinking about what makes you so irreplaceable. You possess this astonishing balance of immense gentleness and profound emotional endurance. When someone speaks to you, you don't merely wait for your turn to talk; you listen with your whole being, as though their tiny world matters intensely to you in that exact second. In an era where people are so quick to look away, you have the rare gift of truly seeing others—and seeing them with total compassion, never with judgment.
+                    </p>
+
+                    <p>
+                        To know you is to understand that good people do not just exist in ancient fairy tales or classic poetry. They exist right here, drinking their tea, sending hilarious memes, navigating their day, and holding the universe together with their quiet grace. That person is you, Val.
+                    </p>
+
+                    <blockquote class="my-8 p-6 rounded-2xl bg-pink-500/10 border-l-4 border-pink-400 italic text-pink-200 font-serif text-lg">
+                        "If the universe was created to experience itself through consciousness, then every star that ever ignited did so just so it could eventually look through your eyes and smile."
+                    </blockquote>
+
+                    <p>
+                        Never diminish the impact of your gentleness. In a harsh world, choosing softness is the highest form of bravery, and you are one of the bravest people I will ever know.
+                    </p>
+                </div>
+            </article>
+
+            <!-- CHAPTER 2 (EIFFEL TOWER LENGTH MONOLOGUE) -->
+            <article id="chapter2" class="glass-card rounded-3xl p-6 sm:p-10 md:p-14 border border-white/15 leading-relaxed relative overflow-hidden hidden transition-all duration-500">
+                <div class="absolute top-0 right-0 p-8 text-8xl font-cinzel text-white/[0.03] select-none pointer-events-none">02</div>
+                <div class="max-w-3xl mx-auto space-y-6 text-base sm:text-lg text-purple-100/90 font-light">
+                    <div class="border-b border-white/10 pb-4 mb-6">
+                        <span class="text-xs font-bold text-pink-400 tracking-widest uppercase">Chapter II</span>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mt-1">An Eiffel Tower of Reasons Why Val Shines</h3>
+                        <p class="text-xs text-purple-300 mt-1">A monolithic, unbroken cascade of praise that stretches as tall as iron and starlight.</p>
+                    </div>
+
+                    <p class="first-letter:font-cinzel first-letter:text-6xl first-letter:font-bold first-letter:text-pink-400 first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+                        Let us build a tower of words, Val. Let us stack clause upon clause, truth upon truth, until the sheer weight of everything glorious about you reaches past the clouds, past the troposphere, and brushes the silent rings of Saturn. If someone asked me to catalog every reason you are a treasure, I would have to ask for an eternity of ink, because you are not a single chapter in a textbook; you are an entire library of kindness.
+                    </p>
+
+                    <p>
+                        You shine in the quiet moments—the times when no one is watching, when there is no applause, no audience, and no incentive other than the pure purity of your own heart. You shine when you check in on people just because a gentle thought fluttered through your mind. You shine when you remember tiny details that others let slip past—the little foods someone loves, the small worries they confessed three weeks ago at 2 AM, the exact brand of comfort they crave when their world feels fractured.
+                    </p>
+
+                    <p>
+                        You shine in your humor. The world can be so heavy, so weighed down by deadlines and solemn obligations, but your wit has this miraculous ability to puncture dread. One laugh from you has the power to dismantle twenty-four hours of anxiety. Your humor is never cruel; it is celebratory, playful, radiant, and endlessly clever. It is the sound of someone who refuses to let darkness win.
+                    </p>
+
+                    <p>
+                        And oh, how you shine when you are simply passionate! When you talk about something you love, whether it is an idea, an art piece, a memory, a story, or a beloved dream, your eyes carry a constellation of light that could illuminate an entire coastline. To watch you be genuinely excited is one of the greatest spectator experiences in life. It reminds anyone lucky enough to be in your orbit that existence is rich, vibrant, and worthy of celebration.
+                    </p>
+
+                    <p>
+                        Do you know how many times your existence has softened someone's secret despair? You will probably never know the true total, because you are humble to a fault, but I know it. You carry an aura of unconditional welcoming. With you, nobody feels like they have to put on a mask or pretend to be someone who has all their pieces neatly glued together. You welcome people in their messy, human, imperfect reality and you make them feel entirely worthy of love.
+                    </p>
+
+                    <p>
+                        Look at how resilient you have been, Val. Think of every mountain you have climbed—even the ones where your boots were soaked and your shoulders were shivering. You have had moments where you wondered if you were strong enough, and yet you emerged with your compassion intact. You did not let bitterness consume your sweetness. That, my dear Val, is an act of sheer moral majesty.
+                    </p>
+
+                    <p>
+                        You are the cup of warm cocoa on a snowy December night; you are the sudden smell of rain on sun-baked cedar; you are the favorite song you haven't heard in years coming on the radio right when you needed a sign; you are the quiet harbor when the storm is howling outside. This tower of words could stretch for ten thousand more sentences and it would still only be an introduction to how much you deserve every happiness the universe has stored away.
+                    </p>
+                </div>
+            </article>
+
+            <!-- CHAPTER 3 -->
+            <article id="chapter3" class="glass-card rounded-3xl p-6 sm:p-10 md:p-14 border border-white/15 leading-relaxed relative overflow-hidden hidden transition-all duration-500">
+                <div class="absolute top-0 right-0 p-8 text-8xl font-cinzel text-white/[0.03] select-none pointer-events-none">03</div>
+                <div class="max-w-3xl mx-auto space-y-6 text-base sm:text-lg text-purple-100/90 font-light">
+                    <div class="border-b border-white/10 pb-4 mb-6">
+                        <span class="text-xs font-bold text-pink-400 tracking-widest uppercase">Chapter III</span>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mt-1">The Architecture of Your Laugh</h3>
+                    </div>
+
+                    <p class="first-letter:font-cinzel first-letter:text-6xl first-letter:font-bold first-letter:text-pink-400 first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+                        Certain sounds are healing in ways modern medicine has yet to categorize: the rhythm of ocean waves breaking on smooth pebbles, the gentle patter of raindrops on a skylight, and without a doubt, Val laughing so hard that you almost lose your breath.
+                    </p>
+
+                    <p>
+                        Your laugh is not performative. It is completely, gorgeously real. It starts from some secret spring of honest amusement, spreads across your face like golden sunlight spilling over a windowsill, and then rings out with a melody that makes everyone in a ten-foot radius smile involuntarily. It is literally impossible to be miserable when you are having the time of your life.
+                    </p>
+
+                    <p>
+                        The architecture of your joy is built on generosity. You don't hoard your happiness; you shower it like confetti. When you find joy in something small—a funny cat video, an absurd situation, an inside joke we've repeated fifty times—you invite everyone to share in it. That generosity of spirit is rare. It makes the world less lonely.
+                    </p>
+
+                    <p>
+                        May the years ahead give you reasons to laugh so intensely your ribs ache in the best way possible. May your joy remain unstealable, protected by the knowledge of how deeply you are loved.
+                    </p>
+                </div>
+            </article>
+
+            <!-- CHAPTER 4 -->
+            <article id="chapter4" class="glass-card rounded-3xl p-6 sm:p-10 md:p-14 border border-white/15 leading-relaxed relative overflow-hidden hidden transition-all duration-500">
+                <div class="absolute top-0 right-0 p-8 text-8xl font-cinzel text-white/[0.03] select-none pointer-events-none">04</div>
+                <div class="max-w-3xl mx-auto space-y-6 text-base sm:text-lg text-purple-100/90 font-light">
+                    <div class="border-b border-white/10 pb-4 mb-6">
+                        <span class="text-xs font-bold text-pink-400 tracking-widest uppercase">Chapter IV</span>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mt-1">A Lifelong Vow to Val Across Every Tomorrow</h3>
+                    </div>
+
+                    <p class="first-letter:font-cinzel first-letter:text-6xl first-letter:font-bold first-letter:text-pink-400 first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+                        Here is a promise etched not in dust or passing trends, but set in stone: Whatever the coming chapters of life bring—whether radiant triumphs that we celebrate with champagne and fireworks, or quiet, heavy evenings where the world feels cold—I am in your corner. Completely. Steadfastly. Unconditionally.
+                    </p>
+
+                    <p>
+                        You will never have to face self-doubt alone as long as I have breath to remind you who you are. On the days when you forget your magic, I will recite it to you until you remember. On the days when you are too tired to carry your own confidence, you can borrow mine, because I believe in you with a ferocity that cannot be shaken.
+                    </p>
+
+                    <p>
+                        I promise to celebrate your smallest victories with the enthusiasm of an Olympic crowd. I promise to sit with you in silence when words fall short. I promise to keep laughing at your jokes, validating your feelings, reminding you to drink water and sleep, and ensuring you never feel solitary in this giant, spinning world.
+                    </p>
+
+                    <p>
+                        Thank you for being my friend, my sanctuary, and one of the clearest reasons why life is sweet. Val, you are a masterclass in being human.
+                    </p>
+                </div>
+            </article>
+
+            <!-- CHAPTER 5 -->
+            <article id="chapter5" class="glass-card rounded-3xl p-6 sm:p-10 md:p-14 border border-white/15 leading-relaxed relative overflow-hidden hidden transition-all duration-500">
+                <div class="absolute top-0 right-0 p-8 text-8xl font-cinzel text-white/[0.03] select-none pointer-events-none">05</div>
+                <div class="max-w-3xl mx-auto space-y-6 text-base sm:text-lg text-purple-100/90 font-light">
+                    <div class="border-b border-white/10 pb-4 mb-6">
+                        <span class="text-xs font-bold text-pink-400 tracking-widest uppercase">Chapter V</span>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mt-1">The Anthology of Universal Truths About Val</h3>
+                    </div>
+
+                    <p>Here are undeniable, scientifically and cosmically verified truths about Val:</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm sm:text-base pt-2">
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">1.</span>
+                            <span>Val has an emotional radar so sensitive they can detect sorrow through text messages and neutralize it with warmth.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">2.</span>
+                            <span>The sparkle in Val's eye when they're happy could easily power a small solar grid.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">3.</span>
+                            <span>Animals and plants instinctively trust Val because they sense pure, gentle energy.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">4.</span>
+                            <span>Val's hugs reset nervous systems back to tranquil baseline peace.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">5.</span>
+                            <span>No matter how chaotic the room is, Val is the calm anchor everybody gravitates towards.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">6.</span>
+                            <span>Val has good taste in virtually everything, from humor to music to heart-to-hearts.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">7.</span>
+                            <span>A message from Val turns any mundane Tuesday into an honorary holiday.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex gap-3">
+                            <span class="text-pink-400 font-bold">8.</span>
+                            <span>The world is demonstrably 840% warmer and safer simply because Val draws breath within it.</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- SECTION 3: THE SECRET ENVELOPE VAULT -->
+    <section id="vault" class="py-24 px-4 md:px-8 bg-black/30 border-y border-white/5 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Private Sanctuary</span>
+                <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">The Secret Envelope Vault</h2>
+                <p class="text-purple-200/80 max-w-2xl mx-auto text-sm md:text-base">
+                    Twelve hand-crafted wax-sealed envelopes for whenever your spirit needs a specific haven. Click any envelope to unlock its private letter.
+                </p>
+            </div>
+
+            <!-- Envelope Grid -->
+            <div id="envelopeGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Javascript will inject 12 envelopes with modals -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: THE SWEET COMPLIMENT DISPENSER & AFFIRMATIONS -->
+    <section id="dispenser" class="py-24 px-4 md:px-8 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Endless Sugar For The Soul</span>
+            <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">The Sweet Affirmation Dispenser</h2>
+            <p class="text-purple-200/80 max-w-xl mx-auto text-sm md:text-base mb-10">
+                Tap the candy jar button whenever you need an instant infusion of truth, warmth, and love tailored just for you.
+            </p>
+
+            <!-- Dispenser Machine Card -->
+            <div class="glass-card rounded-3xl p-8 sm:p-12 border border-pink-500/20 shadow-2xl relative overflow-hidden max-w-2xl mx-auto">
+                <!-- Floating jar icon -->
+                <div class="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-tr from-pink-500/30 to-purple-500/30 border border-white/20 flex items-center justify-center text-4xl text-pink-300 shadow-inner">
+                    <i class="fa-solid fa-candy-cane"></i>
+                </div>
+
+                <!-- Display Box -->
+                <div id="dispenserScreen" class="min-h-[140px] flex items-center justify-center p-6 rounded-2xl bg-black/40 border border-white/10 mb-8 transition-all duration-300">
+                    <p id="dispenserText" class="font-serif italic text-lg sm:text-xl text-pink-100 leading-relaxed">
+                        "Press the heart button below, Val. The universe has a thousand sweet things lined up to tell you."
+                    </p>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="dispenseCompliment(event)" class="relative group px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white font-bold text-base shadow-xl shadow-pink-500/30 hover:shadow-pink-500/50 hover:scale-105 active:scale-95 transition-all">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-sparkles text-amber-300"></i>
+                        <span>Dispense Sweetness to Val</span>
+                        <i class="fa-solid fa-heart text-white group-hover:scale-125 transition-transform"></i>
+                    </span>
+                </button>
+
+                <!-- Count badge -->
+                <p class="text-xs text-purple-300/60 mt-4">
+                    Dispensed in this session: <span id="dispenseCount" class="font-bold text-pink-400">0</span> sweet treats
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: INFINITE VIRTUAL HUG & AFFECTION REACTOR -->
+    <section id="hug-station" class="py-24 px-4 md:px-8 bg-black/30 border-y border-white/5 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Haptic Comfort Generator</span>
+            <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">The Infinite Hug Reactor</h2>
+            <p class="text-purple-200/80 max-w-xl mx-auto text-sm md:text-base mb-12">
+                Click as fast or as gently as you need. Every click sends an authentic, full-force virtual bear-hug straight through the digital ether to wrap you up warm.
+            </p>
+
+            <div class="glass-card rounded-3xl p-8 sm:p-14 border border-white/10 relative max-w-xl mx-auto overflow-hidden">
+                <!-- Big Hug Button -->
+                <div class="relative inline-block mb-6">
+                    <button id="hugButton" onclick="triggerHug(event)" class="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-br from-pink-500 via-rose-500 to-purple-600 text-white text-5xl sm:text-6xl flex items-center justify-center shadow-2xl shadow-pink-500/50 hover:scale-110 active:scale-90 transition-all duration-200 cursor-pointer border-4 border-white/30">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
+                </div>
+
+                <!-- Live Counter & Combo -->
+                <div class="space-y-2">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-white font-cinzel tracking-wider">
+                        <span id="hugCount">0</span> <span class="text-pink-400 text-lg sm:text-xl font-sans font-medium">Hugs Received</span>
+                    </div>
+                    <div id="hugComboText" class="text-sm font-semibold text-amber-300 tracking-wide uppercase min-h-[24px]">
+                        <!-- Combo messages -->
+                    </div>
+                    <p id="hugStatusQuote" class="text-xs sm:text-sm text-purple-200/70 italic max-w-md mx-auto pt-2">
+                        "Consider yourself wrapped in a massive, warm wool blanket with your favorite warm drink."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: VAL'S COZY DOODLE & STARLIGHT PAD -->
+    <section id="doodle-pad" class="py-24 px-4 md:px-8 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Interactive Sanctuary</span>
+                <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">Val's Cozy Starlight Canvas</h2>
+                <p class="text-purple-200/80 max-w-xl mx-auto text-sm md:text-base">
+                    Draw glowing memories, write a wish, stamp hearts, or just doodle freely. This canvas was created for your creative peace of mind.
+                </p>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="glass-card rounded-3xl p-4 sm:p-6 border border-white/15 shadow-2xl">
+                <!-- Canvas Toolbar -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-white/10">
+                    <!-- Color Palette -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-purple-300 font-medium">Color:</span>
+                        <button onclick="setBrushColor('#f472b6')" class="w-7 h-7 rounded-full bg-pink-400 border-2 border-white hover:scale-110 transition-transform"></button>
+                        <button onclick="setBrushColor('#fbbf24')" class="w-7 h-7 rounded-full bg-amber-400 border border-white/40 hover:scale-110 transition-transform"></button>
+                        <button onclick="setBrushColor('#c084fc')" class="w-7 h-7 rounded-full bg-purple-400 border border-white/40 hover:scale-110 transition-transform"></button>
+                        <button onclick="setBrushColor('#38bdf8')" class="w-7 h-7 rounded-full bg-sky-400 border border-white/40 hover:scale-110 transition-transform"></button>
+                        <button onclick="setBrushColor('#ffffff')" class="w-7 h-7 rounded-full bg-white border border-white/40 hover:scale-110 transition-transform"></button>
+                    </div>
+
+                    <!-- Stamp Tool Buttons -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="setMode('brush')" id="brushModeBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-pink-500/30 border border-pink-400 text-white">
+                            <i class="fa-solid fa-pen"></i> Pen
+                        </button>
+                        <button onclick="setMode('star')" id="starModeBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 text-purple-200 hover:text-white">
+                            ⭐ Stamp Star
+                        </button>
+                        <button onclick="setMode('heart')" id="heartModeBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 text-purple-200 hover:text-white">
+                            💖 Stamp Heart
+                        </button>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="clearCanvas()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 hover:bg-red-500/20 text-purple-200 hover:text-red-300 border border-white/10 transition-all">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Clear
+                        </button>
+                        <button onclick="saveCanvas()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-400 text-white hover:brightness-110 transition-all">
+                            <i class="fa-solid fa-download mr-1"></i> Save Art
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drawing Canvas Area -->
+                <div class="relative w-full h-[380px] sm:h-[460px] bg-[#120b22] rounded-2xl overflow-hidden border border-white/10 cursor-crosshair">
+                    <canvas id="doodleCanvas" class="w-full h-full block"></canvas>
+                </div>
+                <div class="text-right text-[11px] text-purple-300/50 mt-2">Touch and mouse drawing supported</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: SWEETNESS CHECKLIST & QUEST LOG -->
+    <section id="quest-log" class="py-24 px-4 md:px-8 bg-black/30 border-y border-white/5 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-14">
+                <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Gentle Reminders</span>
+                <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">Val's Daily Kindness Quests</h2>
+                <p class="text-purple-200/80 max-w-xl mx-auto text-sm md:text-base">
+                    Tiny micro-celebrations for you to check off today. You don't have to be productive to be cherished.
+                </p>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 sm:p-10 border border-white/15 space-y-4 max-w-2xl mx-auto">
+                <div id="questList" class="space-y-3">
+                    <!-- Injected by JavaScript -->
+                </div>
+
+                <!-- Quest Progress -->
+                <div class="pt-6 border-t border-white/10 flex items-center justify-between text-xs sm:text-sm text-purple-200">
+                    <span id="questProgressText">0 / 6 Quests Cherished</span>
+                    <button onclick="resetQuests()" class="text-pink-400 hover:underline">Reset Checklist</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: SEARCHABLE SWEET ARCHIVE -->
+    <section id="archive" class="py-24 px-4 md:px-8 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="text-pink-400 font-semibold tracking-widest text-xs uppercase block mb-2">Infinite Library</span>
+                <h2 class="font-cinzel text-3xl sm:text-5xl font-extrabold gold-shimmer mb-4">The Sweet Things Archive</h2>
+                <p class="text-purple-200/80 max-w-xl mx-auto text-sm md:text-base mb-8">
+                    Looking for a specific reminder or flavor of warmth? Filter or search below.
+                </p>
+
+                <!-- Search and Filters -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto mb-8">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-300 text-sm"></i>
+                        <input type="text" id="archiveSearch" oninput="filterArchive()" placeholder="Search sweet notes, words, memories..." class="w-full pl-10 pr-4 py-2.5 rounded-full bg-white/5 border border-white/15 text-sm text-white placeholder-purple-300/50 focus:outline-none focus:border-pink-400 transition-colors">
+                    </div>
+                    <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto justify-center">
+                        <button onclick="setArchiveCategory('all')" class="cat-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold bg-pink-500 text-white transition-all" data-cat="all">All</button>
+                        <button onclick="setArchiveCategory('comfort')" class="cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-purple-200 hover:text-white border border-white/10 transition-all" data-cat="comfort">Comfort</button>
+                        <button onclick="setArchiveCategory('humor')" class="cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-purple-200 hover:text-white border border-white/10 transition-all" data-cat="humor">Humor</button>
+                        <button onclick="setArchiveCategory('praise')" class="cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-purple-200 hover:text-white border border-white/10 transition-all" data-cat="praise">Praise</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="archiveGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER / CONCLUSION -->
+    <footer class="py-16 px-4 md:px-8 border-t border-white/10 bg-[#080312] text-center relative z-10">
+        <div class="max-w-3xl mx-auto space-y-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-pink-500/20 text-pink-400 text-xl mb-2">
+                <i class="fa-solid fa-infinity"></i>
+            </div>
+            <h3 class="font-cinzel text-2xl sm:text-3xl font-bold text-white">Always & Forever For Val</h3>
+            <p class="text-sm md:text-base text-purple-200/70 font-light leading-relaxed max-w-xl mx-auto">
+                No matter how far the horizon stretches, remember that you are profoundly valued, endlessly celebrated, and unconditionally loved exactly as you are.
+            </p>
+            <div class="pt-6 text-xs text-purple-300/40">
+                Crafted with boundless adoration • The Val Universe • Always Your Safe Harbor
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL POPUP FOR WAX SEAL LETTERS -->
+    <div id="letterModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl max-w-2xl w-full p-6 sm:p-10 border border-pink-400/30 relative animate-float-slow max-h-[85vh] overflow-y-auto">
+            <button onclick="closeLetterModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 rounded-full bg-red-600/30 wax-seal flex items-center justify-center text-red-300 text-lg">
+                    <i class="fa-solid fa-stamp"></i>
+                </span>
+                <div>
+                    <span id="modalCategory" class="text-xs uppercase font-bold text-pink-400 tracking-wider">Secret Note</span>
+                    <h3 id="modalTitle" class="font-serif text-xl sm:text-2xl text-white font-semibold">Letter Title</h3>
+                </div>
+            </div>
+            <div id="modalBody" class="text-purple-100/90 text-sm sm:text-base font-serif italic leading-relaxed space-y-4">
+                <!-- Content inserted dynamically -->
+            </div>
+            <div class="mt-8 pt-4 border-t border-white/10 flex justify-between items-center">
+                <span class="text-xs text-pink-300 font-script text-lg">Love you to pieces, Val</span>
+                <button onclick="closeLetterModal()" class="px-5 py-2 rounded-full bg-pink-500/20 hover:bg-pink-500/40 border border-pink-400/40 text-pink-200 text-xs font-semibold transition-all">
+                    Close Envelope
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* -------------------------------------------------------------
+           1. COSMIC PARTICLES CANVAS BACKGROUND
+        ------------------------------------------------------------- */
+        const starCanvas = document.getElementById('starCanvas');
+        const starCtx = starCanvas.getContext('2d');
+        let stars = [];
+        let blossoms = [];
+
+        function resizeStarCanvas() {
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            blossoms = [];
+            const count = Math.floor(window.innerWidth * 0.08);
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * starCanvas.width,
+                    y: Math.random() * starCanvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    alpha: Math.random() * 0.8 + 0.2,
+                    speed: Math.random() * 0.02 + 0.005,
+                    color: Math.random() > 0.4 ? '#ffb3c6' : '#fef08a'
+                });
+            }
+            // Add gentle floating cherry blossom/starlight petals
+            for (let i = 0; i < 20; i++) {
+                blossoms.push({
+                    x: Math.random() * starCanvas.width,
+                    y: Math.random() * starCanvas.height,
+                    size: Math.random() * 4 + 2,
+                    speedY: Math.random() * 0.6 + 0.2,
+                    speedX: Math.sin(Math.random() * Math.PI) * 0.5,
+                    angle: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 1.5
+                });
+            }
+        }
+
+        function animateStars() {
+            starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+
+            // Draw Stars
+            stars.forEach(s => {
+                s.alpha += Math.sin(Date.now() * s.speed) * 0.01;
+                starCtx.beginPath();
+                starCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                starCtx.fillStyle = s.color;
+                starCtx.globalAlpha = Math.max(0.1, Math.min(1, s.alpha));
+                starCtx.fill();
+            });
+
+            // Draw Blossoms
+            starCtx.globalAlpha = 0.35;
+            blossoms.forEach(b => {
+                b.y += b.speedY;
+                b.x += b.speedX;
+                b.angle += b.rotationSpeed;
+                if (b.y > starCanvas.height) {
+                    b.y = -10;
+                    b.x = Math.random() * starCanvas.width;
+                }
+
+                starCtx.save();
+                starCtx.translate(b.x, b.y);
+                starCtx.rotate((b.angle * Math.PI) / 180);
+                starCtx.fillStyle = '#f472b6';
+                starCtx.beginPath();
+                starCtx.ellipse(0, 0, b.size, b.size * 1.8, 0, 0, Math.PI * 2);
+                starCtx.fill();
+                starCtx.restore();
+            });
+
+            starCtx.globalAlpha = 1.0;
+            requestAnimationFrame(animateStars);
+        }
+
+        /* -------------------------------------------------------------
+           2. DYNAMIC TYPEWRITER SUBTITLE
+        ------------------------------------------------------------- */
+        const typewriterPhrases = [
+            "Your kindness is a light in a sometimes heavy world.",
+            "You have this rare talent for making everyone feel safe and loved.",
+            "Certified to be the greatest friend across every known galaxy.",
+            "Thank you for being the warm tea on a frosty winter morning.",
+            "Never doubt your brilliance, your gentle power, or your worth."
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typewriterEl = document.getElementById('typewriterText');
+
+        function typeLoop() {
+            const current = typewriterPhrases[phraseIndex];
+            if (isDeleting) {
+                typewriterEl.textContent = current.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterEl.textContent = current.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 30 : 65;
+
+            if (!isDeleting && charIndex === current.length) {
+                typeSpeed = 2400; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % typewriterPhrases.length;
+                typeSpeed = 400;
+            }
+
+            setTimeout(typeLoop, typeSpeed);
+        }
+
+        /* -------------------------------------------------------------
+           3. WEB AUDIO AMBIENT SOUND GENERATOR
+        ------------------------------------------------------------- */
+        let audioCtx = null;
+        let isAudioPlaying = false;
+        let masterGain = null;
+        let currentPreset = 'chimes';
+        let chimeInterval = null;
+        let rainNode = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                masterGain.connect(audioCtx.destination);
+            }
+        }
+
+        function toggleAudio() {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (!isAudioPlaying) {
+                isAudioPlaying = true;
+                document.getElementById('soundIcon').className = 'fa-solid fa-volume-high text-pink-400 animate-pulse';
+                document.getElementById('soundLabel').innerText = 'Atmosphere: On';
+                startCurrentPreset();
+            } else {
+                isAudioPlaying = false;
+                document.getElementById('soundIcon').className = 'fa-solid fa-volume-xmark text-pink-400';
+                document.getElementById('soundLabel').innerText = 'Play Ambient Sound';
+                stopCurrentPreset();
+            }
+        }
+
+        function setSoundPreset(preset) {
+            currentPreset = preset;
+            if (isAudioPlaying) {
+                stopCurrentPreset();
+                startCurrentPreset();
+            }
+        }
+
+        function startCurrentPreset() {
+            if (!audioCtx) return;
+            if (currentPreset === 'chimes') {
+                playWarmDrone();
+                chimeInterval = setInterval(playRandomChime, 1800);
+            } else if (currentPreset === 'rain') {
+                startRainSound();
+            } else if (currentPreset === 'fire') {
+                startFireSound();
+            }
+        }
+
+        function stopCurrentPreset() {
+            if (chimeInterval) {
+                clearInterval(chimeInterval);
+                chimeInterval = null;
+            }
+            if (rainNode) {
+                try { rainNode.stop(); } catch(e){}
+                rainNode = null;
+            }
+        }
+
+        // Soft melodic ambient chord
+        function playWarmDrone() {
+            const freqs = [174, 261.63, 329.63, 392.00]; // Warm F & C major tone
+            freqs.forEach(f => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(masterGain);
+                osc.start();
+            });
+        }
+
+        // Celestial chimes generator
+        function playRandomChime() {
+            if (!isAudioPlaying || !audioCtx) return;
+            const pentatonic = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+            const freq = pentatonic[Math.floor(Math.random() * pentatonic.length)];
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.2);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 2.3);
+        }
+
+        // White noise filtered to sound like soothing rain
+        function startRainSound() {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+
+            noise.start();
+            rainNode = noise;
+        }
+
+        function startFireSound() {
+            startRainSound(); // base warm hiss
+        }
+
+        /* -------------------------------------------------------------
+           4. CHAPTER TABS LOGIC
+        ------------------------------------------------------------- */
+        function switchChapter(chNum) {
+            for (let i = 1; i <= 5; i++) {
+                const ch = document.getElementById(`chapter${i}`);
+                const tab = document.getElementById(`chTab${i}`);
+                if (i === chNum) {
+                    ch.classList.remove('hidden');
+                    tab.classList.add('border-pink-400/50', 'text-pink-300');
+                    tab.classList.remove('border-white/10', 'text-purple-300');
+                } else {
+                    ch.classList.add('hidden');
+                    tab.classList.remove('border-pink-400/50', 'text-pink-300');
+                    tab.classList.add('border-white/10', 'text-purple-300');
+                }
+            }
+        }
+
+        /* -------------------------------------------------------------
+           5. SECRET ENVELOPE VAULT DATA & MODAL
+        ------------------------------------------------------------- */
+        const envelopes = [
+            {
+                title: "Open When You Feel Overwhelmed",
+                tag: "Sanctuary",
+                icon: "fa-cloud-rain",
+                preview: "Take a deep breath and set down the heavy rocks you carry...",
+                content: "Val, right now, take your shoulders away from your ears, release your jaw, and let out a deep sigh. You do not have to conquer every mountain today. You do not have to hold up the sky on your own shoulders. It is okay if all you did today was simply survive and breathe. The world can wait. Your peace comes first. You are doing enough, and you ARE enough."
+            },
+            {
+                title: "Open When You Doubt Your Magic",
+                tag: "Confidence",
+                icon: "fa-wand-magic-sparkles",
+                preview: "A gentle reminder of who you really are beneath the fear...",
+                content: "When doubt whispers that you are not capable or extraordinary, know with absolute certainty that it is lying to you. Look back at all the storms you thought would consume you—every single one of them you weathered. You possess an innate wisdom and a quiet grit that is nothing short of heroic. Trust in the person you have painstakingly built."
+            },
+            {
+                title: "Open When It's Late at Night & You Can't Sleep",
+                tag: "Nighttime",
+                icon: "fa-moon",
+                preview: "For the quiet hours when thoughts wander like stray comets...",
+                content: "The world is asleep, and you are safe. Whatever unresolved conversations or unfinished tasks are pacing through your mind, wrap them up in a soft blanket and leave them for tomorrow. Tomorrow has its own light. Tonight is for your rest. You are safe, you are loved, and you are protected."
+            },
+            {
+                title: "Open When You Need a Good Giggle",
+                tag: "Humor",
+                icon: "fa-face-laugh-squint",
+                preview: "An emergency dose of ridiculousness and goofy joy...",
+                content: "Remember that somewhere out there, a penguin tripped today and acted like nobody saw it. Remember that we are floating on a wet rock in the middle of infinite void, which means your tiny embarrassing moments matter roughly 0.0000001% in the grand scheme. Go have a snack and giggle at the absurdity of it all!"
+            },
+            {
+                title: "Open When You Feel Lonely",
+                tag: "Warmth",
+                icon: "fa-hand-holding-heart",
+                preview: "You are never as isolated as your shadows make you feel...",
+                content: "Loneliness has a cruel way of building fake walls around us. But Val, even if there are miles between us, you have a permanent room in my heart. You are thought of often, with immense fondness and genuine gratitude. If you called or reached out right now, there would be open arms on the other side."
+            },
+            {
+                title: "Open When You Accomplished Something",
+                tag: "Celebration",
+                icon: "fa-trophy",
+                preview: "Pop the invisible confetti and celebrate your win!",
+                content: "LOOK AT YOU GO! I am cheering for you so loudly my voice is practically cracked! Whether this was a massive life milestone or simply getting out of bed and putting on fresh clothes, I am proud of you. Treat yourself today. You earned this."
+            },
+            {
+                title: "Open When You're Angry at the World",
+                tag: "Validation",
+                icon: "fa-fire",
+                preview: "Your feelings are completely valid and understood...",
+                content: "It is okay to be furious. Sometimes things are unfair, people are frustrating, and life hands you lemons that are sour and bruised. Feel your fire, scream into a pillow if you must, but don't let the bitterness permanently darken your heart. You are too good for that."
+            },
+            {
+                title: "Open When You Miss Old Memories",
+                tag: "Nostalgia",
+                icon: "fa-images",
+                preview: "Golden threads of times past that never fade away...",
+                content: "The beautiful thing about precious memories is that once created, they belong to you forever. Time cannot steal the laughter we shared, the late-night talks, or the small funny moments. And best of all? We have so many more memories still waiting to be lived."
+            },
+            {
+                title: "Open When You Feel Unappreciated",
+                tag: "Truth",
+                icon: "fa-gem",
+                preview: "Even when others fail to see your gold...",
+                content: "Just because someone walks past a priceless diamond without noticing its brilliance does not make it a pebble. You are precious, Val. Your gentleness, your humor, your integrity—they matter infinitely. Never measure your worth by the eyesight of people who are spiritually blind."
+            },
+            {
+                title: "Open When You Need a Random Reason to Smile",
+                tag: "Smile",
+                icon: "fa-sun",
+                preview: "Tiny sweet facts waiting just for Val...",
+                content: "Sea otters hold hands while they sleep so they don't drift away. Cows have best friends and get stressed when separated. And I have Val in my life, which makes me the luckiest human in this quadrant of the galaxy."
+            },
+            {
+                title: "Open When It's Your Birthday or Special Day",
+                tag: "Hooray",
+                icon: "fa-cake-candles",
+                preview: "A toast to the day the world got significantly better...",
+                content: "May this trip around the sun bring you endless soft sweaters, perfectly brewed drinks, spontaneous bouts of laughter, and dreams falling gently into place. Happy day to one of my favorite humans ever."
+            },
+            {
+                title: "Open Just Because I Love You",
+                tag: "Forever",
+                icon: "fa-infinity",
+                preview: "No reason needed. Simply a declaration of sweet truth...",
+                content: "You don't need an occasion to be told you matter. You matter on boring Tuesdays, on lazy Sundays, when you are thriving, and when you are struggling. Just a reminder that you are cherished beyond words."
+            }
+        ];
+
+        function renderEnvelopes() {
+            const grid = document.getElementById('envelopeGrid');
+            grid.innerHTML = envelopes.map((env, index) => `
+                <div onclick="openLetterModal(${index})" class="glass-card glass-card-hover rounded-2xl p-6 border border-white/10 cursor-pointer relative group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                                ${env.tag}
+                            </span>
+                            <div class="w-8 h-8 rounded-full bg-red-600/40 wax-seal flex items-center justify-center text-red-300 text-xs group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-stamp"></i>
+                            </div>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-white group-hover:text-pink-300 transition-colors mb-2">
+                            ${env.title}
+                        </h4>
+                        <p class="text-xs text-purple-200/70 font-light leading-relaxed">
+                            ${env.preview}
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-pink-400 font-medium">
+                        <span>Click to Unseal Letter</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openLetterModal(index) {
+            const letter = envelopes[index];
+            document.getElementById('modalCategory').innerText = letter.tag;
+            document.getElementById('modalTitle').innerText = letter.title;
+            document.getElementById('modalBody').innerHTML = `<p>${letter.content}</p>`;
+            document.getElementById('letterModal').classList.remove('hidden');
+        }
+
+        function closeLetterModal() {
+            document.getElementById('letterModal').classList.add('hidden');
+        }
+
+        /* -------------------------------------------------------------
+           6. COMPLIMENT DISPENSER LOGIC
+        ------------------------------------------------------------- */
+        const compliments = [
+            "Val, you bring a calm to situations that nothing else can manufacture.",
+            "Your smile should be prescribed by doctors as an instant cure for low spirits.",
+            "You have this astonishing way of making people feel safe to be their authentic selves.",
+            "If kindness were currency, you would be richer than every tech mogul combined.",
+            "Your intuition and empathy are borderline psychic in the best possible way.",
+            "Thank you for being someone whose integrity never wavers when things get tough.",
+            "You are the living proof that softness and courage belong hand in hand.",
+            "Even when you think you are doing nothing, your quiet support changes someone's day.",
+            "Your taste in humor makes ordinary moments feel like cherished memories.",
+            "The universe definitely spent extra time and care when designing your heart.",
+            "You make everyone around you feel like they matter. That is your superpower.",
+            "I hope you look in the mirror today and see how breathtakingly worthy you are.",
+            "Being your friend is one of my greatest life flexes.",
+            "You are a masterclass in compassion, humor, and grace.",
+            "The warmth you generate could keep a whole city cozy through a polar vortex."
+        ];
+        let dispensedCount = 0;
+
+        function dispenseCompliment(e) {
+            dispensedCount++;
+            document.getElementById('dispenseCount').innerText = dispensedCount;
+            const text = compliments[Math.floor(Math.random() * compliments.length)];
+            const screen = document.getElementById('dispenserText');
+
+            screen.parentElement.classList.add('scale-95');
+            setTimeout(() => {
+                screen.textContent = `"${text}"`;
+                screen.parentElement.classList.remove('scale-95');
+            }, 150);
+
+            // Trigger floating heart particles
+            spawnFloatingHearts(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2, 8);
+        }
+
+        /* -------------------------------------------------------------
+           7. HUG REACTOR LOGIC
+        ------------------------------------------------------------- */
+        let hugTally = 0;
+        const hugComboPhrases = [
+            "Warmth Sparked!",
+            "Double Hug Power!",
+            "MEGA SQUEEZE ACTIVATED!",
+            "ULTRA COZY COMBO!",
+            "GALACTIC BEAR HUG UNLOCKED!",
+            "HEART CHARGED TO 10,000%!"
+        ];
+
+        function triggerHug(e) {
+            hugTally++;
+            document.getElementById('hugCount').innerText = hugTally;
+
+            // Animate button
+            const btn = document.getElementById('hugButton');
+            btn.classList.add('scale-90');
+            setTimeout(() => btn.classList.remove('scale-90'), 120);
+
+            // Combo text
+            const comboIdx = Math.min(Math.floor(hugTally / 5), hugComboPhrases.length - 1);
+            document.getElementById('hugComboText').innerText = hugComboPhrases[comboIdx] + ` (x${hugTally})`;
+
+            // Spawn explosive hearts
+            spawnFloatingHearts(e.clientX, e.clientY, 12);
+        }
+
+        function spawnFloatingHearts(x, y, count) {
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                el.className = 'fixed text-pink-400 text-lg pointer-events-none z-50 transition-all duration-1000';
+                el.style.left = `${x}px`;
+                el.style.top = `${y}px`;
+
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 80 + 40;
+                const destX = x + Math.cos(angle) * dist;
+                const destY = y + Math.sin(angle) * dist - 50;
+
+                document.body.appendChild(el);
+
+                setTimeout(() => {
+                    el.style.transform = `translate(${destX - x}px, ${destY - y}px) scale(0)`;
+                    el.style.opacity = '0';
+                }, 20);
+
+                setTimeout(() => el.remove(), 1100);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           8. DOODLE PAD (INTERACTIVE HTML5 CANVAS)
+        ------------------------------------------------------------- */
+        const doodleCanvas = document.getElementById('doodleCanvas');
+        const dCtx = doodleCanvas.getContext('2d');
+        let drawing = false;
+        let brushColor = '#f472b6';
+        let drawMode = 'brush'; // 'brush', 'star', 'heart'
+
+        function setupDoodleCanvas() {
+            const rect = doodleCanvas.parentElement.getBoundingClientRect();
+            doodleCanvas.width = rect.width;
+            doodleCanvas.height = rect.height;
+            dCtx.lineCap = 'round';
+            dCtx.lineJoin = 'round';
+            dCtx.lineWidth = 4;
+            dCtx.strokeStyle = brushColor;
+        }
+
+        function setBrushColor(color) {
+            brushColor = color;
+            dCtx.strokeStyle = color;
+        }
+
+        function setMode(mode) {
+            drawMode = mode;
+            ['brushModeBtn', 'starModeBtn', 'heartModeBtn'].forEach(id => {
+                document.getElementById(id).className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 text-purple-200 hover:text-white';
+            });
+            if (mode === 'brush') document.getElementById('brushModeBtn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-pink-500/30 border border-pink-400 text-white';
+            if (mode === 'star') document.getElementById('starModeBtn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/30 border border-amber-400 text-white';
+            if (mode === 'heart') document.getElementById('heartModeBtn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-pink-500/30 border border-pink-400 text-white';
+        }
+
+        function getCanvasPos(e) {
+            const rect = doodleCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        doodleCanvas.addEventListener('mousedown', startDraw);
+        doodleCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); }, { passive: false });
+
+        doodleCanvas.addEventListener('mousemove', draw);
+        doodleCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+
+        window.addEventListener('mouseup', endDraw);
+        window.addEventListener('touchend', endDraw);
+
+        function startDraw(e) {
+            const pos = getCanvasPos(e);
+            if (drawMode === 'brush') {
+                drawing = true;
+                dCtx.beginPath();
+                dCtx.moveTo(pos.x, pos.y);
+            } else if (drawMode === 'star') {
+                drawStar(pos.x, pos.y, 5, 16, 8, brushColor);
+            } else if (drawMode === 'heart') {
+                drawHeart(pos.x, pos.y, 14, brushColor);
+            }
+        }
+
+        function draw(e) {
+            if (!drawing || drawMode !== 'brush') return;
+            const pos = getCanvasPos(e);
+            dCtx.lineTo(pos.x, pos.y);
+            dCtx.stroke();
+        }
+
+        function endDraw() {
+            drawing = false;
+        }
+
+        function drawStar(cx, cy, spikes, outerRadius, innerRadius, color) {
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            const step = Math.PI / spikes;
+
+            dCtx.beginPath();
+            dCtx.moveTo(cx, cy - outerRadius);
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                dCtx.lineTo(x, y);
+                rot += step;
+
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                dCtx.lineTo(x, y);
+                rot += step;
+            }
+            dCtx.lineTo(cx, cy - outerRadius);
+            dCtx.closePath();
+            dCtx.fillStyle = color;
+            dCtx.fill();
+        }
+
+        function drawHeart(x, y, size, color) {
+            dCtx.save();
+            dCtx.beginPath();
+            dCtx.translate(x, y);
+            dCtx.moveTo(0, 0);
+            dCtx.bezierCurveTo(-size, -size, -size * 1.5, size / 3, 0, size * 1.3);
+            dCtx.bezierCurveTo(size * 1.5, size / 3, size, -size, 0, 0);
+            dCtx.fillStyle = color;
+            dCtx.fill();
+            dCtx.restore();
+        }
+
+        function clearCanvas() {
+            dCtx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
+        }
+
+        function saveCanvas() {
+            const link = document.createElement('a');
+            link.download = 'Vals-Starlight-Art.png';
+            link.href = doodleCanvas.toDataURL();
+            link.click();
+        }
+
+        /* -------------------------------------------------------------
+           9. KINDNESS QUEST LOG
+        ------------------------------------------------------------- */
+        const quests = [
+            "Drink a tall, refreshing glass of cool water",
+            "Give yourself credit for how far you've genuinely come",
+            "Take three long, slow, soothing belly breaths",
+            "Remember that your value isn't tied to your productivity",
+            "Listen to your current favorite song without multitasking",
+            "Accept that you are unconditionally loved by your people"
+        ];
+        let completedQuests = new Set();
+
+        function renderQuests() {
+            const list = document.getElementById('questList');
+            list.innerHTML = quests.map((q, i) => `
+                <div onclick="toggleQuest(${i})" class="flex items-center gap-3 p-3.5 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors ${completedQuests.has(i) ? 'opacity-50 line-through' : ''}">
+                    <div class="w-5 h-5 rounded-md border flex items-center justify-center ${completedQuests.has(i) ? 'bg-pink-500 border-pink-400 text-white' : 'border-white/30'}">
+                        ${completedQuests.has(i) ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                    </div>
+                    <span class="text-sm font-medium text-purple-100">${q}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('questProgressText').innerText = `${completedQuests.size} / ${quests.length} Quests Cherished`;
+        }
+
+        function toggleQuest(i) {
+            if (completedQuests.has(i)) {
+                completedQuests.delete(i);
+            } else {
+                completedQuests.add(i);
+            }
+            renderQuests();
+        }
+
+        function resetQuests() {
+            completedQuests.clear();
+            renderQuests();
+        }
+
+        /* -------------------------------------------------------------
+           10. SEARCHABLE ARCHIVE DATA & FILTER
+        ------------------------------------------------------------- */
+        const archiveItems = [
+            { cat: 'comfort', title: 'A Safe Harbor', text: 'You do not have to be cheerful all the time. Your sadness and fatigue are welcome here too.' },
+            { cat: 'praise', title: 'Unmatched Wit', text: 'Val has an observational wit sharp enough to win awards and soft enough to make everyone laugh.' },
+            { cat: 'humor', title: 'Official Fact', text: 'NASA has confirmed that Val is the center of gravitational warmth in this galaxy.' },
+            { cat: 'comfort', title: 'The World Can Wait', text: 'Give yourself permission to pause. Rest is not a reward you earn; it is a human requirement.' },
+            { cat: 'praise', title: 'The Listening Ear', text: 'To be listened to by Val is to feel like the only human whose story matters in that moment.' },
+            { cat: 'humor', title: 'Anti-Doubt Protocol', text: 'If you start second-guessing yourself, please consult the official decree: Val is 100% iconic.' }
+        ];
+
+        let currentArchiveCat = 'all';
+
+        function setArchiveCategory(cat) {
+            currentArchiveCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                if (b.dataset.cat === cat) {
+                    b.className = 'cat-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold bg-pink-500 text-white transition-all';
+                } else {
+                    b.className = 'cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-purple-200 hover:text-white border border-white/10 transition-all';
+                }
+            });
+            filterArchive();
+        }
+
+        function filterArchive() {
+            const query = document.getElementById('archiveSearch').value.toLowerCase();
+            const grid = document.getElementById('archiveGrid');
+
+            const filtered = archiveItems.filter(item => {
+                const matchesCat = currentArchiveCat === 'all' || item.cat === currentArchiveCat;
+                const matchesSearch = item.title.toLowerCase().includes(query) || item.text.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-pink-400 block mb-2">${item.cat}</span>
+                        <h4 class="font-serif text-lg font-semibold text-white mb-2">${item.title}</h4>
+                        <p class="text-xs text-purple-200/80 leading-relaxed font-light">${item.text}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/5 text-pink-300 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-heart text-[10px]"></i>
+                        <span>Truth for Val</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* -------------------------------------------------------------
+           11. READING PROGRESS BAR
+        ------------------------------------------------------------- */
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPos = window.scrollY;
+            const progress = (scrollPos / docHeight) * 100;
+            document.getElementById('readingProgress').style.width = `${progress}%`;
+        });
+
+        /* -------------------------------------------------------------
+           INITIALIZATION ON WINDOW LOAD
+        ------------------------------------------------------------- */
+        window.onload = function() {
+            resizeStarCanvas();
+            animateStars();
+            typeLoop();
+            renderEnvelopes();
+            setupDoodleCanvas();
+            renderQuests();
+            filterArchive();
+        };
+
+        window.addEventListener('resize', () => {
+            resizeStarCanvas();
+            setupDoodleCanvas();
+        });
+    </script>
+</body>
+</html>
